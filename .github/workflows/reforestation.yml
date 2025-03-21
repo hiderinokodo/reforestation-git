@@ -1,0 +1,33 @@
+name: Reforestation
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  push:
+    branches:
+      - main
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set Git identity
+        run: |
+          git config --global user.name "hiderinokodo"
+          git config --global user.email "hilihkinthil13@gmail.com"
+
+      - name: Create changes
+        run: |
+          echo "Auto commit at $(date)" > auto_commit_log.txt
+          git add auto_commit_log.txt
+          git commit -m "Auto commit: $(date)" || echo "No changes to commit"
+
+      - name: Push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/hiderinokodo/reforestation-git.git HEAD:main
